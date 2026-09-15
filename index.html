@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Strategy Workspace</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        apple: {
+                            bg: '#f5f5f7',
+                            surface: 'rgba(255, 255, 255, 0.65)',
+                            text: '#1d1d1f',
+                            textMuted: '#86868b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f5f5f7;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.1) 0, transparent 50%);
+            background-attachment: fixed;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        .bento-box {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 28px; 
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bento-box:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .bg-gradient-substack { background: linear-gradient(135deg, rgba(255,154,158,0.15) 0%, rgba(254,204,238,0.15) 100%); }
+        .bg-gradient-reel { background: linear-gradient(135deg, rgba(161,196,253,0.15) 0%, rgba(194,233,251,0.15) 100%); }
+        .bg-gradient-canva { background: linear-gradient(135deg, rgba(212,252,121,0.15) 0%, rgba(150,230,161,0.15) 100%); }
+        .bg-gradient-social { background: linear-gradient(135deg, rgba(255,236,210,0.15) 0%, rgba(252,182,159,0.15) 100%); }
+        .bg-gradient-photos { background: linear-gradient(135deg, rgba(207,217,223,0.15) 0%, rgba(226,235,240,0.15) 100%); }
+
+        .doc-link {
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            border-radius: 12px;
+        }
+        .doc-link:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+            transform: translateX(4px);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .emoji-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .edit-input {
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px dashed rgba(100, 100, 100, 0.3);
+            border-radius: 6px;
+            padding: 4px 8px;
+            transition: all 0.2s;
+            color: inherit;
+            font-family: inherit;
+            width: 100%;
+        }
+        .edit-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 122, 255, 0.5);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+        textarea.edit-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .loader {
+            border: 3px solid rgba(0,0,0,0.1);
+            border-bottom-color: #1d1d1f;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 lg:p-12">
+
+    <div id="app-root">
+        <div class="h-[60vh] flex flex-col items-center justify-center gap-4 text-apple-textMuted">
+            <span class="loader w-8 h-8"></span>
+            <p class="font-medium">Loading your workspace...</p>
+        </div>
+    </div>
+
+    <footer class="max-w-6xl mx-auto mt-12 mb-6 text-center text-sm text-apple-textMuted">
+        <p>Digital Strategy Workspace &copy; 2026. Keep up the good work!</p>
+    </footer>
+
+    <script>
+        // ============================================================================
+        // 1. PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+        // ============================================================================
+        const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbxAkL8b4OSYbyv3n9OHCykXOQU1Kg-uh2h-TIaxm0BST8xjDK0UBqJmcflkg6_DOqo6/exec"; 
+        // Leave empty while testing here. Once you deploy your sheet, paste the URL above.
+
+        const defaultData = {
+            header: {
+                title: "Workspace ✨",
+                subtitle: "Digital Strategy Materials & Working Documents"
+            },
+            cards: [
+                {
+                    id: 'substack', type: 'list', title: 'Substack', emoji: '✍️', tag: '3 Drafts', tagClass: 'bg-orange-100 text-orange-600',
+                    desc: 'Newsletters and long-form articles.', bgClass: 'bg-gradient-substack',
+                    items: [
+                        { id: 's1', name: 'Q3 Strategy Recap', url: 'https://substack.com', icon: 'fa-regular fa-file-lines text-orange-400' },
+                        { id: 's2', name: 'New Product Launch Draft', url: 'https://substack.com', icon: 'fa-regular fa-file-lines text-orange-400' },
+                    ]
+                },
+                {
+                    id: 'scripts', type: 'list', title: 'Scripts', emoji: '🎬', tag: 'Active', tagClass: 'bg-blue-100 text-blue-600',
+                    desc: 'Scripts for Reels, TikTok, and Shorts.', bgClass: 'bg-gradient-reel',
+                    items: [
+                        { id: 'r1', name: 'Behind the Scenes - Tour', url: '#', icon: 'fa-solid fa-play text-blue-400' },
+                        { id: 'r3', name: 'Team Intro (Completed)', url: '#', icon: 'fa-solid fa-check text-green-500', isStrikethrough: true }
+                    ]
+                },
+                {
+                    id: 'canva', type: 'kanban', title: 'Canva Production', emoji: '🎨', tag: 'High Priority', tagClass: 'bg-green-100 text-green-700',
+                    desc: 'List of visual assets needed for current campaigns.', bgClass: 'bg-gradient-canva', colSpan: 'lg:col-span-2 md:col-span-2',
+                    groups: [
+                        { id: 'g1', name: 'To Do', items: [{ id: 'c1', name: 'Carousel for Q3 results' }] },
+                        { id: 'g2', name: 'In Review', items: [{ id: 'c3', name: 'Website Hero Banner' }] }
+                    ]
+                },
+                {
+                    id: 'captions', type: 'textarea', title: 'Captions', emoji: '📱', tag: 'Drafting', tagClass: 'bg-purple-100 text-purple-600',
+                    desc: 'Working doc for IG, LinkedIn, and X captions.', bgClass: 'bg-gradient-social',
+                    content: 'Drafting for Friday:\n\n"Excited to announce our newest integration! 👇 Link in bio!"'
+                },
+                {
+                    id: 'assets', type: 'table', title: 'Assets & Links', emoji: '🔗', tag: 'Master', tagClass: 'bg-gray-200 text-gray-700',
+                    desc: 'Master tables for photo drives, raw footage, and brand assets.', bgClass: 'bg-gradient-photos', colSpan: 'lg:col-span-2',
+                    items: [
+                        { id: 'a1', name: 'Q3 Brand Photoshoot', platform: 'G-Drive', url: '#', icon: 'fa-brands fa-google-drive text-green-500' },
+                        { id: 'a2', name: 'Raw B-Roll Footage', platform: 'Dropbox', url: '#', icon: 'fa-solid fa-cloud text-blue-400' }
+                    ]
+                }
+            ]
+        };
+
+        let appData = JSON.parse(JSON.stringify(defaultData));
+        let isEditMode = false;
+
+        async function loadData() {
+            if (!GOOGLE_SHEETS_API_URL) {
+                // If no URL is provided yet, use Local Storage for testing purposes
+                const localData = localStorage.getItem('dashboardData');
+                if (localData) {
+                    appData = JSON.parse(localData);
+                }
+                render();
+                return;
+            }
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL);
+                const data = await response.json();
+                
+                // Only overwrite if the sheet actually returned our nested data structure
+                if (data && data.header && data.cards) {
+                    appData = data;
+                }
+                render();
+            } catch (error) {
+                console.error("Error loading from Google Sheets:", error);
+                render(); // Render default data if fetch fails
+            }
+        }
+
+        async function saveData() {
+            const saveStatusUi = document.getElementById('cloud-save-status');
+            
+            if (saveStatusUi) {
+                saveStatusUi.innerHTML = '<i class="fa-solid fa-arrows-rotate animate-spin"></i> Saving...';
+                saveStatusUi.className = "text-xs font-medium text-apple-textMuted flex items-center gap-1";
+            }
+
+            if (!GOOGLE_SHEETS_API_URL) {
+                // Testing fallback
+                localStorage.setItem('dashboardData', JSON.stringify(appData));
+                showSaveSuccess(saveStatusUi, 'Saved Locally');
+                return;
+            }
+            
+            try {
+                // Sending data as plain text prevents CORS preflight errors in Apps Script
+                await fetch(GOOGLE_SHEETS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(appData)
+                });
+                
+                showSaveSuccess(saveStatusUi, 'Saved to Sheets');
+            } catch (e) {
+                console.error("Error saving data:", e);
+                if (saveStatusUi) {
+                    saveStatusUi.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-500"></i> Error saving';
+                }
+            }
+        }
+
+        function showSaveSuccess(uiElement, text) {
+            if (uiElement) {
+                uiElement.innerHTML = `<i class="fa-solid fa-cloud-check text-green-500"></i> ${text}`;
+                setTimeout(() => {
+                    if (uiElement) uiElement.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe && unsafe !== 0) return '';
+            return unsafe.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        function renderHeader() {
+            const h = appData.header;
+            return `
+                <header class="max-w-6xl mx-auto mb-10 text-center md:text-left pt-6 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+                    <div class="flex-1 w-full text-left">
+                        ${isEditMode 
+                            ? `<input class="edit-input text-4xl md:text-5xl font-bold tracking-tight text-apple-text mb-2 block" value="${escapeHtml(h.title)}" data-action="update-header-title">
+                               <input class="edit-input text-lg text-apple-textMuted font-medium block mt-2" value="${escapeHtml(h.subtitle)}" data-action="update-header-subtitle">`
+                            : `<h1 class="text-4xl md:text-5xl font-bold tracking-tight text-apple-text mb-2">${escapeHtml(h.title)}</h1>
+                               <p class="text-lg text-apple-textMuted font-medium">${escapeHtml(h.subtitle)}</p>`
+                        }
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <div id="cloud-save-status" class="h-4"></div>
+                        <button data-action="toggle-edit" class="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold shadow-sm transition-all w-full md:w-auto ${isEditMode ? 'bg-green-500 text-white hover:bg-green-600 shadow-green-200' : 'bg-white/80 text-gray-700 hover:bg-white border border-gray-200'}">
+                            <i class="${isEditMode ? 'fa-solid fa-check' : 'fa-solid fa-pen'}"></i>
+                            ${isEditMode ? 'Done Editing' : 'Edit Dashboard'}
+                        </button>
+                    </div>
+                </header>
+            `;
+        }
+
+        function renderListCard(card) {
+            return card.items.map(item => {
+                if (isEditMode) {
+                    return `
+                        <div class="flex flex-col gap-1 p-3 bg-white/30 rounded-xl border border-white/50 mb-2 relative group">
+                            <div class="flex items-center gap-2">
+                                <i class="${item.icon} w-5 text-center"></i>
+                                <input class="edit-input flex-1 text-sm font-medium" value="${escapeHtml(item.name)}" placeholder="Item Name" data-action="update-list-name" data-card-id="${card.id}" data-item-id="${item.id}">
+                                <button data-action="delete-list-item" data-card-id="${card.id}" data-item-id="${item.id}" class="text-red-500 hover:text-red-700 w-6 h-6 flex items-center justify-center bg-white/50 rounded-full transition-opacity opacity-50 hover:opacity-100" title="Delete">
+                                    <i class="fa-solid fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2 pl-7">
+                                <i class="fa-solid fa-link text-xs text-gray-500 w-5 text-center"></i>
+                                <input class="edit-input flex-1 text-xs text-blue-600" value="${escapeHtml(item.url)}" placeholder="https://..." data-action="update-list-url" data-card-id="${card.id}" data-item-id="${item.id}">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <a href="${item.url}" class="doc-link flex items-center p-2 text-sm font-medium text-apple-text ${item.isStrikethrough ? 'opacity-60 line-through' : ''}" target="_blank" rel="noopener noreferrer">
+                            <i class="${item.icon} w-5 text-center"></i>
+                            ${escapeHtml(item.name)}
+                        </a>
+                    `;
+                }
+            }).join('');
+        }
+
+        function renderKanbanCard(card) {
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                    ${card.groups.map(group => `
+                        <div class="bg-white/40 rounded-xl p-3 border border-white/50 flex flex-col">
+                            ${isEditMode 
+                                ? `<div class="flex items-center gap-2 mb-2">
+                                     <input class="edit-input text-xs font-bold text-gray-500 uppercase tracking-wider" value="${escapeHtml(group.name)}" data-action="update-kanban-group-name" data-card-id="${card.id}" data-group-id="${group.id}">
+                                   </div>`
+                                : `<h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">${escapeHtml(group.name)}</h3>`
+                            }
+                            <div class="space-y-2 flex-1">
+                                ${group.items.map(item => `
+                                    <div class="flex items-start gap-2 text-sm p-1">
+                                        <i class="fa-regular ${group.id === 'g1' ? 'fa-square' : 'fa-clock'} text-gray-400 mt-0.5"></i>
+                                        ${isEditMode
+                                            ? `<input class="edit-input flex-1 text-sm" value="${escapeHtml(item.name)}" data-action="update-kanban-item-name" data-card-id="${card.id}" data-group-id="${group.id}" data-item-id="${item.id}">
+                                               <button data-action="delete-kanban-item" data-card-id="${card.id}" data-group-id="${group.id}" data-item-id="${item.id}" class="text-red-400 hover:text-red-600 ml-1"><i class="fa-solid fa-times"></i></button>`
+                                            : `<span>${escapeHtml(item.name)}</span>`
+                                        }
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${isEditMode ? `
+                                <button data-action="add-kanban-item" data-card-id="${card.id}" data-group-id="${group.id}" class="mt-3 py-1 bg-white/50 rounded-lg text-xs font-semibold text-gray-600 hover:bg-white/80 border border-dashed border-gray-400">
+                                    + Add to ${escapeHtml(group.name)}
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderTextareaCard(card) {
+            if (isEditMode) {
+                return `<textarea class="edit-input flex-1 w-full bg-white/40 rounded-xl p-4 border border-white/50 text-sm font-medium text-gray-700 resize-none h-32" placeholder="Write your captions here..." data-action="update-textarea" data-card-id="${card.id}">${escapeHtml(card.content)}</textarea>`;
+            } else {
+                const htmlContent = escapeHtml(card.content).replace(/\n/g, '<br>');
+                return `
+                    <div class="flex-1 bg-white/40 rounded-xl p-4 border border-white/50 text-sm overflow-y-auto whitespace-pre-wrap font-medium text-gray-700 relative">
+                        ${htmlContent}
+                    </div>
+                `;
+            }
+        }
+
+        function renderTableCard(card) {
+            return `
+                <div class="flex-1 overflow-x-auto w-full">
+                    <table class="w-full text-left border-collapse min-w-[400px]">
+                        <thead>
+                            <tr class="border-b border-gray-200/50">
+                                <th class="pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/2">Resource</th>
+                                <th class="pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/4">Platform</th>
+                                <th class="pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right w-1/4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            ${card.items.map(item => {
+                                if (isEditMode) {
+                                    return `
+                                        <tr class="border-b border-gray-100/30">
+                                            <td class="py-2 pr-2">
+                                                <div class="flex items-center gap-2">
+                                                    <i class="${item.icon} w-5 text-center text-lg"></i>
+                                                    <input class="edit-input" value="${escapeHtml(item.name)}" placeholder="Name" data-action="update-table-name" data-card-id="${card.id}" data-item-id="${item.id}">
+                                                </div>
+                                            </td>
+                                            <td class="py-2 pr-2">
+                                                <input class="edit-input" value="${escapeHtml(item.platform)}" placeholder="Platform" data-action="update-table-platform" data-card-id="${card.id}" data-item-id="${item.id}">
+                                            </td>
+                                            <td class="py-2 flex items-center gap-2 justify-end">
+                                                <input class="edit-input text-xs text-blue-500" value="${escapeHtml(item.url)}" placeholder="URL" data-action="update-table-url" data-card-id="${card.id}" data-item-id="${item.id}">
+                                                <button data-action="delete-table-item" data-card-id="${card.id}" data-item-id="${item.id}" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                } else {
+                                    return `
+                                        <tr class="border-b border-gray-100/30 hover:bg-white/20 transition-colors">
+                                            <td class="py-3 font-medium flex items-center gap-2 text-apple-text">
+                                                <i class="${item.icon} text-lg w-5 text-center"></i>
+                                                ${escapeHtml(item.name)}
+                                            </td>
+                                            <td class="py-3 text-gray-600">${escapeHtml(item.platform)}</td>
+                                            <td class="py-3 text-right">
+                                                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline hover:text-blue-600 font-medium">Open Link</a>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderMainGrid() {
+            const cardsHtml = appData.cards.map(card => {
+                let contentHtml = '';
+                if (card.type === 'list') contentHtml = renderListCard(card);
+                else if (card.type === 'kanban') contentHtml = renderKanbanCard(card);
+                else if (card.type === 'textarea') contentHtml = renderTextareaCard(card);
+                else if (card.type === 'table') contentHtml = renderTableCard(card);
+
+                return `
+                    <div class="bento-box ${card.bgClass} flex flex-col p-6 ${card.colSpan || ''}">
+                        <div class="flex items-center justify-between mb-4 gap-2">
+                            <h2 class="text-2xl font-semibold flex items-center gap-3 flex-1 min-w-0">
+                                <span class="emoji-icon bg-white p-2 rounded-xl shadow-sm flex items-center justify-center w-12 h-12 shrink-0">
+                                    ${isEditMode 
+                                        ? `<input class="edit-input text-center p-0 m-0 w-full h-full text-xl bg-transparent border-none focus:bg-white" value="${escapeHtml(card.emoji)}" data-action="update-card-emoji" data-card-id="${card.id}">`
+                                        : escapeHtml(card.emoji)
+                                    }
+                                </span>
+                                ${isEditMode
+                                    ? `<input type="text" class="edit-input font-semibold text-2xl w-full" data-action="update-card-title" data-card-id="${card.id}" value="${escapeHtml(card.title)}">`
+                                    : `<span class="truncate">${escapeHtml(card.title)}</span>`
+                                }
+                            </h2>
+                            ${isEditMode
+                                ? `<input type="text" class="edit-input text-xs w-24 shrink-0 text-center" data-action="update-card-tag" data-card-id="${card.id}" value="${escapeHtml(card.tag)}">`
+                                : `<span class="text-xs font-semibold ${card.tagClass} px-3 py-1.5 rounded-full whitespace-nowrap shadow-sm">${escapeHtml(card.tag)}</span>`
+                            }
+                        </div>
+                        
+                        ${isEditMode
+                            ? `<textarea class="edit-input text-sm mb-4 w-full h-16 resize-none" data-action="update-card-desc" data-card-id="${card.id}">${escapeHtml(card.desc)}</textarea>`
+                            : `<p class="text-sm text-apple-textMuted mb-4">${escapeHtml(card.desc)}</p>`
+                        }
+                        
+                        <div class="flex-1 overflow-y-auto custom-scrollbar pr-1 flex flex-col gap-1">
+                            ${contentHtml}
+                        </div>
+                        
+                        ${isEditMode && card.type !== 'textarea' && card.type !== 'kanban' ? `
+                            <button data-action="add-card-item" data-card-id="${card.id}" class="mt-4 w-full py-2 bg-white/40 hover:bg-white/60 border border-dashed border-gray-400 rounded-xl text-sm font-semibold transition-colors text-gray-600 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Add New Link
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <main class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[minmax(250px,_auto)]">
+                        ${cardsHtml}
+                    </div>
+                </main>
+            `;
+        }
+
+        function render() {
+            const root = document.getElementById('app-root');
+            root.innerHTML = renderHeader() + renderMainGrid();
+        }
+
+        document.addEventListener('input', (e) => {
+            if (!e.target.matches('.edit-input')) return;
+            
+            const action = e.target.getAttribute('data-action');
+            const cardId = e.target.getAttribute('data-card-id');
+            const itemId = e.target.getAttribute('data-item-id');
+            const groupId = e.target.getAttribute('data-group-id');
+            const val = e.target.value;
+
+            if (action === 'update-header-title') appData.header.title = val;
+            if (action === 'update-header-subtitle') appData.header.subtitle = val;
+
+            const card = appData.cards.find(c => c.id === cardId);
+            if (!card) return;
+
+            if (action === 'update-card-title') card.title = val;
+            if (action === 'update-card-emoji') card.emoji = val;
+            if (action === 'update-card-tag') card.tag = val;
+            if (action === 'update-card-desc') card.desc = val;
+            
+            if (card.type === 'list' && itemId) {
+                const item = card.items.find(i => i.id === itemId);
+                if (item) {
+                    if (action === 'update-list-name') item.name = val;
+                    if (action === 'update-list-url') item.url = val;
+                }
+            }
+
+            if (action === 'update-textarea') {
+                card.content = val;
+            }
+
+            if (card.type === 'kanban' && groupId) {
+                const group = card.groups.find(g => g.id === groupId);
+                if (group) {
+                    if (action === 'update-kanban-group-name') group.name = val;
+                    if (itemId) {
+                        const item = group.items.find(i => i.id === itemId);
+                        if (item && action === 'update-kanban-item-name') item.name = val;
+                    }
+                }
+            }
+
+            if (card.type === 'table' && itemId) {
+                const item = card.items.find(i => i.id === itemId);
+                if (item) {
+                    if (action === 'update-table-name') item.name = val;
+                    if (action === 'update-table-platform') item.platform = val;
+                    if (action === 'update-table-url') item.url = val;
+                }
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            
+            const action = btn.getAttribute('data-action');
+            const cardId = btn.getAttribute('data-card-id');
+            const itemId = btn.getAttribute('data-item-id');
+            const groupId = btn.getAttribute('data-group-id');
+
+            if (action === 'toggle-edit') {
+                isEditMode = !isEditMode;
+                if (!isEditMode) {
+                    saveData(); // Save to Google Sheets when Done Editing
+                }
+                render();
+                return;
+            }
+
+            const card = appData.cards.find(c => c.id === cardId);
+            if (!card) return;
+
+            if (action === 'add-card-item') {
+                if (card.type === 'list') {
+                    card.items.push({ id: generateId(), name: 'New Resource', url: '#', icon: 'fa-regular fa-file' });
+                } else if (card.type === 'table') {
+                    card.items.push({ id: generateId(), name: 'New Asset', platform: 'Platform', url: '#', icon: 'fa-solid fa-link' });
+                }
+                render();
+            }
+            if (action === 'add-kanban-item' && groupId) {
+                const group = card.groups.find(g => g.id === groupId);
+                if (group) {
+                    group.items.push({ id: generateId(), name: 'New Task' });
+                    render();
+                }
+            }
+
+            if (action === 'delete-list-item' || action === 'delete-table-item') {
+                card.items = card.items.filter(i => i.id !== itemId);
+                render();
+            }
+            if (action === 'delete-kanban-item' && groupId) {
+                const group = card.groups.find(g => g.id === groupId);
+                if (group) {
+                    group.items = group.items.filter(i => i.id !== itemId);
+                    render();
+                }
+            }
+        });
+
+        // Start App
+        loadData();
+
+    </script>
+</body>
+</html>
