@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Strategy Workspace</title>
+    <title>Strategy Link Hub</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -127,12 +127,12 @@
     <div id="app-root">
         <div class="h-[60vh] flex flex-col items-center justify-center gap-4 text-apple-textMuted">
             <span class="loader w-8 h-8"></span>
-            <p class="font-medium">Loading your workspace...</p>
+            <p class="font-medium">Loading your directory...</p>
         </div>
     </div>
 
     <footer class="max-w-6xl mx-auto mt-12 mb-6 text-center text-sm text-apple-textMuted">
-        <p>Digital Strategy Workspace &copy; 2026. Keep up the good work!</p>
+        <p>Digital Strategy Hub &copy; 2026. Keep up the good work!</p>
     </footer>
 
     <script>
@@ -144,45 +144,49 @@
 
         const defaultData = {
             header: {
-                title: "Workspace ✨",
-                subtitle: "Digital Strategy Materials & Working Documents"
+                title: "Strategy Hub ✨",
+                subtitle: "Master Directory for Digital Strategy Working Documents"
             },
             cards: [
                 {
-                    id: 'substack', type: 'list', title: 'Substack', emoji: '✍️', tag: '3 Drafts', tagClass: 'bg-orange-100 text-orange-600',
-                    desc: 'Newsletters and long-form articles.', bgClass: 'bg-gradient-substack',
+                    id: 'substack', type: 'list', title: 'Substack Docs', emoji: '✍️', tag: 'Newsletters', tagClass: 'bg-orange-100 text-orange-600',
+                    desc: 'Links to Google Docs where we draft articles.', bgClass: 'bg-gradient-substack',
                     items: [
-                        { id: 's1', name: 'Q3 Strategy Recap', url: 'https://substack.com', icon: 'fa-regular fa-file-lines text-orange-400' },
-                        { id: 's2', name: 'New Product Launch Draft', url: 'https://substack.com', icon: 'fa-regular fa-file-lines text-orange-400' },
+                        { id: 's1', name: 'Q3 Strategy Recap (G-Doc)', url: '#', icon: 'fa-solid fa-file-word text-blue-500' },
+                        { id: 's2', name: 'Product Launch Series', url: '#', icon: 'fa-solid fa-file-word text-blue-500' },
                     ]
                 },
                 {
-                    id: 'scripts', type: 'list', title: 'Scripts', emoji: '🎬', tag: 'Active', tagClass: 'bg-blue-100 text-blue-600',
-                    desc: 'Scripts for Reels, TikTok, and Shorts.', bgClass: 'bg-gradient-reel',
+                    id: 'scripts', type: 'list', title: 'Video Scripts', emoji: '🎬', tag: 'Short-Form', tagClass: 'bg-blue-100 text-blue-600',
+                    desc: 'Teleprompter scripts and storyboard links.', bgClass: 'bg-gradient-reel',
                     items: [
-                        { id: 'r1', name: 'Behind the Scenes - Tour', url: '#', icon: 'fa-solid fa-play text-blue-400' },
-                        { id: 'r3', name: 'Team Intro (Completed)', url: '#', icon: 'fa-solid fa-check text-green-500', isStrikethrough: true }
+                        { id: 'r1', name: 'TikTok Hook Ideas (Sheet)', url: '#', icon: 'fa-solid fa-file-excel text-green-600' },
+                        { id: 'r2', name: 'Behind the Scenes Script', url: '#', icon: 'fa-solid fa-file-word text-blue-500' }
                     ]
                 },
                 {
-                    id: 'canva', type: 'kanban', title: 'Canva Production', emoji: '🎨', tag: 'High Priority', tagClass: 'bg-green-100 text-green-700',
-                    desc: 'List of visual assets needed for current campaigns.', bgClass: 'bg-gradient-canva', colSpan: 'lg:col-span-2 md:col-span-2',
-                    groups: [
-                        { id: 'g1', name: 'To Do', items: [{ id: 'c1', name: 'Carousel for Q3 results' }] },
-                        { id: 'g2', name: 'In Review', items: [{ id: 'c3', name: 'Website Hero Banner' }] }
+                    id: 'captions', type: 'list', title: 'Social Planners', emoji: '📱', tag: 'Calendars', tagClass: 'bg-purple-100 text-purple-600',
+                    desc: 'Content calendars and caption drafting docs.', bgClass: 'bg-gradient-social',
+                    items: [
+                        { id: 'cap1', name: 'September Content Calendar', url: '#', icon: 'fa-regular fa-calendar text-red-500' },
+                        { id: 'cap2', name: 'LinkedIn Drafts (G-Doc)', url: '#', icon: 'fa-solid fa-file-word text-blue-500' }
                     ]
                 },
                 {
-                    id: 'captions', type: 'textarea', title: 'Captions', emoji: '📱', tag: 'Drafting', tagClass: 'bg-purple-100 text-purple-600',
-                    desc: 'Working doc for IG, LinkedIn, and X captions.', bgClass: 'bg-gradient-social',
-                    content: 'Drafting for Friday:\n\n"Excited to announce our newest integration! 👇 Link in bio!"'
+                    id: 'canva', type: 'list', title: 'Design Files', emoji: '🎨', tag: 'Canva & Figma', tagClass: 'bg-green-100 text-green-700',
+                    desc: 'Direct links to Canva folders and master templates.', bgClass: 'bg-gradient-canva',
+                    items: [
+                        { id: 'c1', name: 'Q3 Brand Assets Folder', url: '#', icon: 'fa-solid fa-palette text-purple-500' },
+                        { id: 'c2', name: 'IG Carousel Master Template', url: '#', icon: 'fa-solid fa-object-group text-purple-500' },
+                    ]
                 },
                 {
-                    id: 'assets', type: 'table', title: 'Assets & Links', emoji: '🔗', tag: 'Master', tagClass: 'bg-gray-200 text-gray-700',
-                    desc: 'Master tables for photo drives, raw footage, and brand assets.', bgClass: 'bg-gradient-photos', colSpan: 'lg:col-span-2',
+                    id: 'assets', type: 'table', title: 'Media & Drives', emoji: '🔗', tag: 'Master Links', tagClass: 'bg-gray-200 text-gray-700',
+                    desc: 'Links to raw footage, photo drives, and brand kits.', bgClass: 'bg-gradient-photos', colSpan: 'lg:col-span-2 md:col-span-2',
                     items: [
                         { id: 'a1', name: 'Q3 Brand Photoshoot', platform: 'G-Drive', url: '#', icon: 'fa-brands fa-google-drive text-green-500' },
-                        { id: 'a2', name: 'Raw B-Roll Footage', platform: 'Dropbox', url: '#', icon: 'fa-solid fa-cloud text-blue-400' }
+                        { id: 'a2', name: 'Raw B-Roll Footage', platform: 'Dropbox', url: '#', icon: 'fa-brands fa-dropbox text-blue-500' },
+                        { id: 'a3', name: 'Website Assets', platform: 'Figma', url: '#', icon: 'fa-brands fa-figma text-pink-500' }
                     ]
                 }
             ]
@@ -194,7 +198,7 @@
         async function loadData() {
             if (!GOOGLE_SHEETS_API_URL) {
                 // If no URL is provided yet, use Local Storage for testing purposes
-                const localData = localStorage.getItem('dashboardData');
+                const localData = localStorage.getItem('linkHubData');
                 if (localData) {
                     appData = JSON.parse(localData);
                 }
@@ -227,7 +231,7 @@
 
             if (!GOOGLE_SHEETS_API_URL) {
                 // Testing fallback
-                localStorage.setItem('dashboardData', JSON.stringify(appData));
+                localStorage.setItem('linkHubData', JSON.stringify(appData));
                 showSaveSuccess(saveStatusUi, 'Saved Locally');
                 return;
             }
